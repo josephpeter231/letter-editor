@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Home from "./pages/Home";
 import Editor from "./pages/Editor";
+import Files from "./pages/Files";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
@@ -19,6 +20,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Editor />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/editor/:fileId" 
+              element={
+                <ProtectedRoute>
+                  <Editor />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/files" 
+              element={
+                <ProtectedRoute>
+                  <Files />
                 </ProtectedRoute>
               } 
             />

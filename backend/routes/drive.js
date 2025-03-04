@@ -161,4 +161,84 @@ router.get("/test", isAuthenticated, async (req, res) => {
   }
 });
 
+
+// In your drive.js routes file
+
+// Get list of files from Drive
+router.get("/files", isAuthenticated, async (req, res) => {
+  try {
+    const drive = google.drive({ 
+      version: "v3", 
+      auth: req.oauth2Client 
+    });
+    
+    // Query for files created by the app - you can customize this query
+    const response = await drive.files.list({
+      q: "trashed = false", // Not in trash
+      fields: "files(id, name, mimeType, webViewLink, createdTime, modifiedTime)",
+      orderBy: "modifiedTime desc", // Most recent first
+      pageSize: 10 // Limit results
+    });
+    
+    res.json(response.data.files);
+  } catch (error) {
+    console.error("Error fetching files:", error);
+    
+    if (error.response?.status === 401) {
+      return res.status(401).json({ 
+        error: "Authentication failed", 
+        message: "Your Google Drive access has expired. Please log in again." 
+      });
+    }
+    
+    res.status(500).json({ 
+      error: "Failed to fetch files", 
+      message: error.message || "An unknown error occurred" 
+    });
+  }
+});
+
+// Get file content
+router.get("/files/:fileId/content", isAuthenticated, async (req, res) => {
+  try {
+    const { fileId } = req.params;
+    
+    const drive = google.drive({ 
+      version: "v3", 
+      auth: req.oauth2Client 
+    });
+    
+    // Get file metadata first to check mime type
+    const fileMetadata = await drive.files.get({
+      fileId,
+      fields: "mimeType,name"
+    });
+    
+    // Export content based on mimeType
+    let content;
+    if (fileMetadata.data.mimeType === "application/vnd.google-apps.document") {
+      // Google Doc
+      const response = await drive.files.export({
+        fileId,
+        mimeType: "text/plain"
+      });
+      content = response.data;
+    } else {
+      // Regular file
+      const response = await drive.files.get({
+        fileId,
+        alt: "media"
+      });
+      content = response.data;
+    }
+    
+    res.json({
+      name: fileMetadata.data.name,
+      content
+    });
+  } catch (error) {
+    console.error("Error getting file content:", error);
+    res.status(500).json({ error: "Failed to get file content" });
+  }
+});
 module.exports = router;
