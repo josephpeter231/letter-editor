@@ -25,35 +25,32 @@ function Files() {
     fetchFiles();
   }, [getAuthAxios]);
 
-  // Format date
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString();
   };
 
   return (
-    <div className="files-container">
-      <h1>Your Documents</h1>
-      <div className="files-actions">
-        <Link to="/editor" className="new-file-btn">
-          Create New Document
-        </Link>
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h1 className="text-primary">Your Documents</h1>
+        <Link to="/editor" className="btn btn-success">Create New Document</Link>
       </div>
 
       {loading ? (
-        <div className="loading">Loading your files...</div>
+        <div className="text-center text-secondary">Loading your files...</div>
       ) : error ? (
-        <div className="error">{error}</div>
+        <div className="alert alert-danger">{error}</div>
       ) : files.length === 0 ? (
-        <div className="no-files">
+        <div className="alert alert-warning text-center">
           <p>You don't have any documents yet.</p>
           <p>
-            <Link to="/editor">Create your first document</Link> to get started!
+            <Link to="/editor" className="alert-link">Create your first document</Link> to get started!
           </p>
         </div>
       ) : (
-        <div className="files-list">
-          <table>
-            <thead>
+        <div className="table-responsive">
+          <table className="table table-bordered table-hover">
+            <thead className="table-primary">
               <tr>
                 <th>Document Name</th>
                 <th>Last Modified</th>
@@ -65,21 +62,9 @@ function Files() {
                 <tr key={file.id}>
                   <td>{file.name}</td>
                   <td>{formatDate(file.modifiedTime)}</td>
-                  <td className="file-actions">
-                    <a 
-                      href={file.webViewLink} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="view-btn"
-                    >
-                      View in Drive
-                    </a>
-                    <Link 
-                      to={`/editor/${file.id}`} 
-                      className="edit-btn"
-                    >
-                      Edit
-                    </Link>
+                  <td>
+                    <a href={file.webViewLink} target="_blank" rel="noopener noreferrer" className="btn btn-info btn-sm me-2">View</a>
+                    <Link to={`/editor/${file.id}`} className="btn btn-primary btn-sm">Edit</Link>
                   </td>
                 </tr>
               ))}

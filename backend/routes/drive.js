@@ -241,4 +241,78 @@ router.get("/files/:fileId/content", isAuthenticated, async (req, res) => {
     res.status(500).json({ error: "Failed to get file content" });
   }
 });
+
+// Update existing file
+router.put("/files/:fileId", isAuthenticated, async (req, res) => {
+  try {
+    const { fileId } = req.params;
+    const { content, name } = req.body;
+    
+    if (!content) {
+      return res.status(400).json({ error: "Content is required" });
+    }
+    
+    const drive = google.drive({ 
+      version: "v3", 
+      auth: req.oauth2Client 
+    });
+    
+    console.log("Updating file:", fileId);
+    
+    // Update file metadata if name is provided
+    if (name) {
+      await drive.files.update({
+        fileId,
+        resource: { name }
+      });
+      console.log("File name updated to:", name);
+    }
+    
+    // Update file content
+    const media = {
+      mimeType: "text/plain",
+      body: content
+    };
+    
+    await drive.files.update({
+      fileId,
+      media
+    });
+    
+    console.log("File content updated");
+    
+    // Get updated file info
+    const file = await drive.files.get({
+      fileId,
+      fields: "id,name,webViewLink"
+    });
+    
+    res.status(200).json({
+      fileId: file.data.id,
+      fileName: file.data.name,
+      webViewLink: file.data.webViewLink
+    });
+  } catch (error) {
+    console.error("Update file error details:", error);
+    
+    if (error.response?.status === 401) {
+      return res.status(401).json({
+        error: "Authentication failed",
+        message: "Your Google Drive access has expired. Please log in again."
+      });
+    }
+    
+    if (error.response?.status === 404) {
+      return res.status(404).json({
+        error: "File not found",
+        message: "The file you're trying to update doesn't exist or you don't have permission to access it."
+      });
+    }
+    
+    res.status(500).json({
+      error: "Failed to update file",
+      message: error.message || "An unknown error occurred"
+    });
+  }
+});
 module.exports = router;
