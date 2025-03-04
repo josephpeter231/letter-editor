@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import "../styles/Editor.css";
 
 function Editor() {
   const [content, setContent] = useState("");

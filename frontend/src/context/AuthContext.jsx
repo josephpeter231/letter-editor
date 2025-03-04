@@ -8,6 +8,15 @@ const API_URL = "http://localhost:5000/api";
 // Create the auth context
 const AuthContext = createContext(null);
 
+// Custom hook to use the auth context
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === null) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
+
 // Provider component that wraps your app and makes auth object available to any child component that calls useAuth()
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

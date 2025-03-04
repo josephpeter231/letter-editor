@@ -6,31 +6,25 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 
-function AppContent() {
-  return (
-    <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route 
-          path="/editor" 
-          element={
-            <ProtectedRoute>
-              <Editor />
-            </ProtectedRoute>
-          } 
-        />
-        <Route path="*" element={<div>Page not found</div>} />
-      </Routes>
-    </>
-  );
-}
-
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <AppContent />
+        <>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route 
+              path="/editor" 
+              element={
+                <ProtectedRoute>
+                  <Editor />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="*" element={<div>Page not found</div>} />
+          </Routes>
+        </>
       </AuthProvider>
     </Router>
   );
