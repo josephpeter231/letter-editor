@@ -2,7 +2,11 @@
 
 A cloud-based document editor that lets you create, edit, and save letters directly to your Google Drive.
 
-![Letter Editor](https://drive.google.com/file/d/1rgPjlSN9ZjHbrc_dwC6prhlTuMS0LH9T/view?usp=drive_link)
+## Demo Video
+
+A demonstration video of the Letter Editor application is available 
+
+![Demo Video](image/README/1741151382471.mp4)
 
 ## 🚀 Features
 
@@ -113,6 +117,7 @@ Visit `http://localhost:5173` to access the application.
 
 The application is deployed and accessible at:
 (backend is hosted in free tier in render.com so there will be some delay)
+
 - **Frontend**: [https://letter-editor.vercel.app](https://letter-editor.vercel.app)
 - **Backend**: [https://letter-editor-backend.onrender.com](https://letter-editor-backend.onrender.com)
 
@@ -140,13 +145,5 @@ The application is deployed and accessible at:
 - `GET /api/drive/files/:fileId/content`: Gets content of a specific document
 - `POST /api/drive/save`: Creates a new document
 - `PUT /api/drive/files/:fileId`: Updates an existing document
-
-## 🛠️ Future Improvements
-
-- Rich text editing with formatting options
-- Document templates for common letter types
-- Collaboration features for shared editing
-- Export options (PDF, Word, etc.)
-- Folder organization for better document management
 
 Made with ❤️ by [Joseph peter J](https://www.linkedin.com/in/josephpeter-j/)
