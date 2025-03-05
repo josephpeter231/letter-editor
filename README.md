@@ -6,7 +6,11 @@ A cloud-based document editor that lets you create, edit, and save letters direc
 
 A demonstration video of the Letter Editor application is available 
 
-![Demo Video](image/README/1741151382471.mp4)
+<div align="center">
+  <a href="https://drive.google.com/file/d/1rgPjlSN9ZjHbrc_dwC6prhlTuMS0LH9T/view">
+    <img src="https://img.shields.io/badge/Watch%20Demo-Video-red?style=for-the-badge&logo=youtube" alt="Watch the demo video">
+  </a>
+</div>
 
 ## 🚀 Features
 
