@@ -2,7 +2,6 @@ const express = require("express");
 const { google } = require("googleapis");
 const router = express.Router();
 
-// Create OAuth client factory function
 const createOAuthClient = () => {
   return new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -18,11 +17,9 @@ const isAuthenticated = async (req, res, next) => {
   console.log("- Headers:", Object.keys(req.headers));
   console.log("- Has auth header:", !!req.headers.authorization);
   
-  // Create a fresh OAuth client for each request
   const oauth2Client = createOAuthClient();
   
   try {
-    // 1. Check session authentication first
     if (req.isAuthenticated() && req.user && req.user.accessToken) {
       console.log("- Using session token");
       oauth2Client.setCredentials({
@@ -33,7 +30,6 @@ const isAuthenticated = async (req, res, next) => {
       return next();
     }
     
-    // 2. Then check for Bearer token
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.split(' ')[1];
@@ -43,16 +39,15 @@ const isAuthenticated = async (req, res, next) => {
       
       console.log("- Token from header:", token.substring(0, 10) + "...");
       
-      // Set token on OAuth client
+
       oauth2Client.setCredentials({ access_token: token });
       
-      // Verify token is valid
+
       try {
         const tokenInfo = await oauth2Client.getTokenInfo(token);
         console.log("- Token verified successfully");
         console.log("- Token expires in:", tokenInfo.expires_in, "seconds");
         
-        // Verify correct scopes
         const hasFileScope = tokenInfo.scopes.includes('https://www.googleapis.com/auth/drive.file');
         if (!hasFileScope) {
           return res.status(403).json({ 
@@ -90,7 +85,6 @@ router.post("/save", isAuthenticated, async (req, res) => {
   try {
     console.log("Save request received");
     
-    // Use the oauth2Client that was set in the middleware
     const drive = google.drive({ 
       version: "v3", 
       auth: req.oauth2Client 
@@ -140,8 +134,6 @@ router.post("/save", isAuthenticated, async (req, res) => {
 router.get("/test", isAuthenticated, async (req, res) => {
   try {
     const drive = google.drive({ version: "v3", auth: req.oauth2Client });
-    
-    // Just retrieve file metadata as a simple test
     const response = await drive.files.list({
       pageSize: 1,
       fields: "files(id, name)"
@@ -160,10 +152,6 @@ router.get("/test", isAuthenticated, async (req, res) => {
     });
   }
 });
-
-
-// In your drive.js routes file
-
 // Get list of files from Drive
 router.get("/files", isAuthenticated, async (req, res) => {
   try {
@@ -176,8 +164,8 @@ router.get("/files", isAuthenticated, async (req, res) => {
     const response = await drive.files.list({
       q: "trashed = false", // Not in trash
       fields: "files(id, name, mimeType, webViewLink, createdTime, modifiedTime)",
-      orderBy: "modifiedTime desc", // Most recent first
-      pageSize: 10 // Limit results
+      orderBy: "modifiedTime desc", 
+      pageSize: 10
     });
     
     res.json(response.data.files);
@@ -208,23 +196,19 @@ router.get("/files/:fileId/content", isAuthenticated, async (req, res) => {
       auth: req.oauth2Client 
     });
     
-    // Get file metadata first to check mime type
     const fileMetadata = await drive.files.get({
       fileId,
       fields: "mimeType,name"
     });
     
-    // Export content based on mimeType
     let content;
     if (fileMetadata.data.mimeType === "application/vnd.google-apps.document") {
-      // Google Doc
       const response = await drive.files.export({
         fileId,
         mimeType: "text/plain"
       });
       content = response.data;
     } else {
-      // Regular file
       const response = await drive.files.get({
         fileId,
         alt: "media"
@@ -259,7 +243,6 @@ router.put("/files/:fileId", isAuthenticated, async (req, res) => {
     
     console.log("Updating file:", fileId);
     
-    // Update file metadata if name is provided
     if (name) {
       await drive.files.update({
         fileId,
@@ -268,7 +251,6 @@ router.put("/files/:fileId", isAuthenticated, async (req, res) => {
       console.log("File name updated to:", name);
     }
     
-    // Update file content
     const media = {
       mimeType: "text/plain",
       body: content

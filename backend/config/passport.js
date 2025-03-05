@@ -10,14 +10,12 @@ module.exports = (passport) => {
         callbackURL: "https://letter-editor-backend.onrender.com/api/auth/google/callback",
       },
       (accessToken, refreshToken, profile, done) => {
-        // Log token receipt for debugging
         console.log("OAuth tokens received:", {
           hasAccessToken: !!accessToken,
           hasRefreshToken: !!refreshToken,
           userId: profile.id
         });
         
-        // Store tokens with the user profile
         const user = {
           id: profile.id,
           displayName: profile.displayName,

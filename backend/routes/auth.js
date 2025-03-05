@@ -9,10 +9,10 @@ router.get(
     scope: [
       "profile", 
       "email",
-      "https://www.googleapis.com/auth/drive.file" // Specific access to files created by the app
+      "https://www.googleapis.com/auth/drive.file"
     ],
-    accessType: "offline", // To get refresh token
-    prompt: "consent"      // Forces consent screen to appear
+    accessType: "offline", 
+    prompt: "consent"      
   })
 );
 
@@ -20,14 +20,12 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "https://letter-editor.vercel.app/login" }),
   (req, res) => {
-    // Add debugging to see what's in the user object
     console.log("OAuth Success - User:", {
       id: req.user.id,
       hasAccessToken: !!req.user.accessToken,
       hasRefreshToken: !!req.user.refreshToken
     });
     
-    // Store tokens in query params (more secure method in production would be better)
     res.redirect(`https://letter-editor.vercel.app/editor?accessToken=${req.user.accessToken}&refreshToken=${req.user.refreshToken || ''}`);
   }
 );
@@ -71,7 +69,6 @@ router.get("/verify-token", (req, res) => {
         scopes: tokenInfo.scopes
       });
       
-      // Check if token has proper scopes
       const hasFileScope = tokenInfo.scopes.includes('https://www.googleapis.com/auth/drive.file');
       
       if (!hasFileScope) {

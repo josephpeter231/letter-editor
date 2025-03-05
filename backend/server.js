@@ -6,7 +6,6 @@ require("dotenv").config();
 
 const app = express();
 
-// Initialize passport
 require("./config/passport")(passport);
 
 app.use(cors({
@@ -23,7 +22,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      maxAge: 24 * 60 * 60 * 1000 
     }
   })
 );
