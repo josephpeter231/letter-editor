@@ -18,7 +18,7 @@ router.get(
 
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "http://localhost:5173/login" }),
+  passport.authenticate("google", { failureRedirect: "https://letter-editor.vercel.app/login" }),
   (req, res) => {
     // Add debugging to see what's in the user object
     console.log("OAuth Success - User:", {
@@ -28,7 +28,7 @@ router.get(
     });
     
     // Store tokens in query params (more secure method in production would be better)
-    res.redirect(`http://localhost:5173/editor?accessToken=${req.user.accessToken}&refreshToken=${req.user.refreshToken || ''}`);
+    res.redirect(`https://letter-editor.vercel.app/editor?accessToken=${req.user.accessToken}&refreshToken=${req.user.refreshToken || ''}`);
   }
 );
 

@@ -10,7 +10,7 @@ const app = express();
 require("./config/passport")(passport);
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "https://letter-editor.vercel.app",
   credentials: true
 }));
 app.use(express.json());
