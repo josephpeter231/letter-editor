@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 // API base URL
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://letter-editor-backend.onrender.com/api";
 
 // Create the auth context
 const AuthContext = createContext(null);

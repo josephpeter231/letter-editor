@@ -61,7 +61,7 @@ router.get("/verify-token", (req, res) => {
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    "http://localhost:5000/api/auth/google/callback"
+    "https://letter-editor-backend.onrender.com/api/auth/google/callback"
   );
   
   oauth2Client.getTokenInfo(token)
@@ -100,7 +100,7 @@ router.post("/refresh-token", (req, res) => {
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    "http://localhost:5000/api/auth/google/callback"
+    "https://letter-editor-backend.onrender.com/api/auth/google/callback"
   );
   
   oauth2Client.setCredentials({ refresh_token: refreshToken });
