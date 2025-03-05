@@ -80,7 +80,6 @@ function Editor() {
         webViewLink: response.data.webViewLink
       });
       
-      // If this was a new file, redirect to the edit URL
       if (!fileId && response.data.fileId) {
         navigate(`/editor/${response.data.fileId}`, { replace: true });
       }
